@@ -7,10 +7,10 @@ import settings
 def getRelationDict():
     file_loc = "./conceptnet-assertions-5.6.0.csv"
 	
-	symmetric_rels = {'/r/RelatedTo', '/r/Synonym', '/r/Antonym', '/r/DistinctFrom',
+    symmetric_rels = {'/r/RelatedTo', '/r/Synonym', '/r/Antonym', '/r/DistinctFrom',
 					  '/r/SimilarTo', '/r/LocatedNear', '/r/EtymologicallyRelatedTo'}
-	
-	with open(file_loc, 'r') as f:
+
+    with open(file_loc, 'r') as f:
 	
 		R = defaultdict(lambda: [])
 	
@@ -28,12 +28,12 @@ def getRelationDict():
 			lang_source, source_w = source.split('/')[2:4]
 			lang_target, target_w = target.split('/')[2:4]
 	
-			if rel in ['/r/RelatedTo', '/r/FormOf', '/r/IsA', '/r/PartOf', '/r/HasA', '/r/UsedFor', '/r/CapableOf', '/r/Causes', '/r/HasProperty', '/r/Desires', '/r/Synonym', '/r/Antonym', '/r/DistinctFrom', '/r/Entails', '/r/SimilarTo', '/r/InstanceOf']:
-				for start in ['the ', 'an ', 'a ']:
-					if source_w.startswith(start):
-						source_w = source_w[len(start):]
-					if target_w.startswith(start):
-						target_w = target_w[len(start):]
+			if rel in ['/r/RelatedTo', '/r/IsA', '/r/PartOf', '/r/HasA', '/r/UsedFor', '/r/CapableOf', '/r/Causes', '/r/HasProperty', '/r/Desires', '/r/Synonym', '/r/Antonym', '/r/Entails', '/r/DistinctFrom', '/r/MannerOf', '/r/HasPrerequisite', '/r/SimilarTo', '/r/InstanceOf']:
+			#	for start in ['the ', 'an ', 'a ']:
+			#		if source_w.startswith(start):
+			#			source_w = source_w[len(start):]
+			#		if target_w.startswith(start):
+			#			target_w = target_w[len(start):]
 						
 				if lang_source == "en" and lang_target == "en":
 					
@@ -46,5 +46,5 @@ def getRelationDict():
 		for k in R:
 			R[k] = list(R[k])
 	
-	with open(file_loc, 'wb') as f:
-		pkl.dump(dict(R), f)
+        with open("./relations_dict", 'wb') as f:
+            pkl.dump(dict(R), f)
