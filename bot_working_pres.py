@@ -3,13 +3,13 @@ import pickle as pkl
 import numpy as np
 from explanation_generation import sample_definition
 from predictions_v2 import guesser
-import local_settings
+
 
 class ContactGame:
     def __init__(self, bot_role, dict_dim):
         self.Answers = []
         self.Explanations = None
-        self.updater = Updater(local_settings.telegram_key, use_context=True)
+        self.updater = Updater("855197924:AAHkIDeoWI_nypSi7SBTjXy8YJMP2OSRv5Y", use_context=True)
 
         self.chat_id = None
         self.group_id = None
@@ -25,7 +25,6 @@ class ContactGame:
         self.N = dict_dim
         self.word_to_expl = None
         self.cur_sequence = None
-        self.word_by_host = None
 
         self.contact_sustain = False
         self.contact_fail = False
@@ -122,12 +121,8 @@ class ContactGame:
                         else:
                             context.bot.send_message(self.chat_id, text='I\'m not sure about this word')
         elif update.message.chat.type == 'private':
-            if update.message.from_user.id != self.explainer_id and update.message.from_user.id != self.host_id:
+            if update.message.from_user.id != self.explainer_id:
                 self.Answers.append([update.message.from_user.id, update.message.text])
-            if update.message.from_user.id == self.host_id:
-                self.word_by_host = update.message.text
-                if self.word_by_host == self.word_to_expl:
-                    self.contact_fail = True
 
     def check_contact(self, context):
         """Check 'Contact' state"""
@@ -140,7 +135,7 @@ class ContactGame:
         answers = [ans for ans in self.Answers[:, 1] if ans.startswith(self.cur_sequence)]
         print(answers, self.Answers[pos, 1])
         if self.contact_fail:
-            context.bot.send_message(chat_id, text='The host has guessed your word and broke the contact!')
+            return
         elif len(set(answers)) == 1 and len(answers) >= 2:
             context.bot.send_message(chat_id, text='Successful contact!')
             self.update_sequence()
